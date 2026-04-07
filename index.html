@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Werkprofiel — ai-werkers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --blue:#1a4fa0;--blue-dark:#0f3070;--blue-mid:#2560c0;
+  --blue-light:#e8f0fb;--blue-pale:#f4f7fd;
+  --text:#1a1f2e;--muted:#5a6478;--border:#dde4f0;--white:#ffffff;
+  --r:16px;--rs:10px;
+  --sh:0 4px 24px rgba(26,79,160,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--blue-pale);color:var(--text);min-height:100vh;line-height:1.6}
+.shell{max-width:680px;margin:0 auto;padding:20px 16px 72px}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:center;padding:28px 0 0;margin-bottom:32px}
+.logotype{display:flex;align-items:center;gap:10px}
+.logotype-mark{width:36px;height:36px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center}
+.logotype-mark svg{width:20px;height:20px}
+.logotype-name{font-weight:700;font-size:17px;color:var(--blue);letter-spacing:-.3px}
+
+/* CARD */
+.card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);padding:40px;margin-bottom:20px;animation:fadeUp .3s ease}
+@media(max-width:600px){.card{padding:28px 22px}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* WELCOME */
+.badge{display:inline-block;background:var(--blue-light);color:var(--blue);font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:5px 13px;border-radius:100px;margin-bottom:18px}
+.hero-title{font-family:'DM Serif Display',serif;font-size:clamp(26px,5vw,40px);line-height:1.15;color:var(--blue-dark);margin-bottom:14px}
+.hero-title em{font-style:italic;color:var(--blue)}
+.hero-sub{font-size:16px;color:var(--muted);line-height:1.75;margin-bottom:28px}
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:28px}
+.pillar{background:var(--blue-pale);border:1.5px solid var(--border);border-radius:var(--rs);padding:12px 14px}
+.pillar-n{font-size:11px;font-weight:700;color:var(--blue);letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px}
+.pillar-label{font-size:13px;font-weight:600;color:var(--text)}
+.meta{display:flex;justify-content:center;gap:20px;font-size:13px;color:var(--muted);margin-bottom:28px;flex-wrap:wrap}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 30px;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;border:none;transition:all .2s;white-space:nowrap}
+.btn-primary{background:var(--blue);color:#fff;box-shadow:0 4px 16px rgba(26,79,160,.28)}
+.btn-primary:hover{background:var(--blue-dark);transform:translateY(-2px)}
+.btn-primary:disabled{background:#9db3d8;box-shadow:none;transform:none;cursor:not-allowed}
+.btn-ghost{background:transparent;color:var(--muted);padding:12px 18px;font-size:14px}
+.btn-ghost:hover{color:var(--blue)}
+.btn-full{width:100%}
+.btn-row{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-top:28px;flex-wrap:wrap}
+
+/* FORM */
+.form-title{font-family:'DM Serif Display',serif;font-size:24px;color:var(--blue-dark);margin-bottom:6px}
+.form-sub{font-size:15px;color:var(--muted);margin-bottom:26px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:520px){.form-grid{grid-template-columns:1fr}}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group.full{grid-column:1/-1}
+label{font-size:12px;font-weight:700;color:var(--text);letter-spacing:.2px;text-transform:uppercase}
+input,select{padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);background:var(--white);transition:border-color .2s;-webkit-appearance:none;appearance:none}
+input:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,79,160,.1)}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 4.5L11 1' stroke='%235a6478' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:34px}
+.privacy{font-size:11px;color:var(--muted);text-align:center;margin-top:14px}
+
+/* PROGRESS */
+.progress-wrap{margin-bottom:26px}
+.progress-top{display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:7px}
+.progress-bg{height:5px;background:var(--blue-light);border-radius:100px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--blue-mid),var(--blue));border-radius:100px;transition:width .45s ease}
+
+/* DIMENSION */
+.dim-chip{display:inline-flex;align-items:center;gap:7px;background:var(--blue-light);color:var(--blue);font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:5px 12px;border-radius:100px;margin-bottom:10px}
+.dim-num{width:18px;height:18px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700}
+.dim-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--blue-dark);margin-bottom:5px}
+.dim-desc{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.6}
+
+/* QUESTIONS */
+.q-list{display:flex;flex-direction:column;gap:24px}
+.q-num{font-size:11px;font-weight:700;color:var(--blue);letter-spacing:.4px;text-transform:uppercase;margin-bottom:4px}
+.q-text{font-size:15px;font-weight:500;color:var(--text);line-height:1.55;margin-bottom:12px}
+.likert{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.l-btn{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 4px;border:1.5px solid var(--border);border-radius:var(--rs);cursor:pointer;transition:all .15s;background:var(--white);font-family:'DM Sans',sans-serif}
+.l-score{font-size:17px;font-weight:700;color:var(--muted);transition:color .15s}
+.l-label{font-size:10px;font-weight:600;color:var(--muted);text-align:center;line-height:1.3}
+.l-btn:hover{border-color:var(--blue-mid);background:var(--blue-light)}
+.l-btn:hover .l-score,.l-btn:hover .l-label{color:var(--blue)}
+.l-btn.sel{border-color:var(--blue);background:var(--blue)}
+.l-btn.sel .l-score,.l-btn.sel .l-label{color:#fff}
+@media(max-width:430px){.l-label{display:none}}
+
+/* RESULTS */
+.result-header{text-align:center;padding-bottom:20px;border-bottom:1.5px solid var(--border);margin-bottom:28px}
+.profile-badge{display:inline-block;padding:6px 18px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;margin-bottom:12px}
+.result-name{font-family:'DM Serif Display',serif;font-size:28px;color:var(--blue-dark);margin-bottom:8px}
+.result-tagline{font-size:15px;color:var(--muted);line-height:1.65;max-width:480px;margin:0 auto}
+.chart-wrap{position:relative;max-width:380px;margin:0 auto 28px}
+.section-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--blue-dark);margin-bottom:16px}
+.dim-scores{display:flex;flex-direction:column;gap:12px}
+.dim-row{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;background:var(--blue-pale);border-radius:var(--rs);border:1.5px solid var(--border)}
+.dim-row-icon{font-size:20px;flex-shrink:0;margin-top:2px}
+.dim-row-body{flex:1;min-width:0}
+.dim-row-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.dim-row-name{font-size:14px;font-weight:700;color:var(--text)}
+.dim-level{font-size:11px;font-weight:700;padding:2px 9px;border-radius:100px;white-space:nowrap}
+.dim-bar-bg{height:4px;background:var(--border);border-radius:100px;overflow:hidden;margin-bottom:7px}
+.dim-bar-fill{height:100%;border-radius:100px;width:0;transition:width 1.2s ease}
+.dim-tip{font-size:12px;color:var(--muted);line-height:1.55}
+
+/* ACTIONS */
+.action-list{display:flex;flex-direction:column;gap:10px}
+.action-item{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--white);border-radius:var(--rs);border:1.5px solid var(--border)}
+.action-num{width:26px;height:26px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+.action-text{font-size:14px;color:var(--text);line-height:1.6}
+
+/* CTA */
+.cta-card{background:linear-gradient(135deg,var(--blue-dark) 0%,var(--blue-mid) 100%);border-radius:var(--r);padding:36px;text-align:center;color:#fff;margin-bottom:20px}
+.cta-title{font-family:'DM Serif Display',serif;font-size:26px;margin-bottom:10px}
+.cta-sub{font-size:15px;opacity:.85;margin-bottom:24px;line-height:1.65}
+.btn-white{background:#fff;color:var(--blue);font-weight:700;padding:14px 28px;border-radius:100px;border:none;font-family:'DM Sans',sans-serif;font-size:15px;cursor:pointer;transition:all .2s}
+.btn-white:hover{background:#f0f6ff;transform:translateY(-2px)}
+
+/* SCREENS */
+.screen{display:none}
+.screen.active{display:block}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- LOGO -->
+  <div class="topbar">
+    <div class="logotype">
+      <div class="logotype-mark">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="10" cy="10" r="3" fill="white"/>
+          <circle cx="3.5" cy="5" r="1.8" fill="white" opacity=".7"/>
+          <circle cx="16.5" cy="5" r="1.8" fill="white" opacity=".7"/>
+          <circle cx="3.5" cy="15" r="1.8" fill="white" opacity=".7"/>
+          <circle cx="16.5" cy="15" r="1.8" fill="white" opacity=".7"/>
+          <line x1="5.8" y1="6.3" x2="8.2" y2="8.5" stroke="white" stroke-width="1.1" opacity=".55"/>
+          <line x1="14.2" y1="6.3" x2="11.8" y2="8.5" stroke="white" stroke-width="1.1" opacity=".55"/>
+          <line x1="5.8" y1="13.7" x2="8.2" y2="11.5" stroke="white" stroke-width="1.1" opacity=".55"/>
+          <line x1="14.2" y1="13.7" x2="11.8" y2="11.5" stroke="white" stroke-width="1.1" opacity=".55"/>
+        </svg>
+      </div>
+      <span class="logotype-name">ai-werkers</span>
+    </div>
+  </div>
+
+  <!-- S0: WELCOME -->
+  <div class="screen active" id="s-welcome">
+    <div class="card" style="text-align:center">
+      <div class="badge">Gratis · 7 minuten · Direct resultaat</div>
+      <h1 class="hero-title">Ontdek jouw<br><em>AI Werkprofiel</em></h1>
+      <p class="hero-sub">25 praktische vragen. Geen technische kennis vereist.<br>Je ontdekt direct waar je staat — en wat je volgende stap is.</p>
+      <div class="pillars">
+        <div class="pillar"><div class="pillar-n">01</div><div class="pillar-label">AI-Kennis</div></div>
+        <div class="pillar"><div class="pillar-n">02</div><div class="pillar-label">Praktisch Gebruik</div></div>
+        <div class="pillar"><div class="pillar-n">03</div><div class="pillar-label">Promptvaardigheid</div></div>
+        <div class="pillar"><div class="pillar-n">04</div><div class="pillar-label">Kritisch Denken</div></div>
+        <div class="pillar"><div class="pillar-n">05</div><div class="pillar-label">AI-Mindset</div></div>
+        <div class="pillar"><div class="pillar-n">06</div><div class="pillar-label">AI-Comfort</div></div>
+        <div class="pillar"><div class="pillar-n">07</div><div class="pillar-label">Verantwoord Gebruik</div></div>
+      </div>
+      <div class="meta">
+        <span>⏱ 7 minuten</span>
+        <span>📋 25 vragen</span>
+        <span>📊 Direct je profiel</span>
+      </div>
+      <button class="btn btn-primary" onclick="goTo('s-form')">Start mijn AI Werkprofiel →</button>
+    </div>
+  </div>
+
+  <!-- S1: FORM -->
+  <div class="screen" id="s-form">
+    <div class="card">
+      <h2 class="form-title">Even kennismaken</h2>
+      <p class="form-sub">Je ontvang jouw persoonlijke rapport op dit e-mailadres. Geen spam, beloofd.</p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="f-naam">Voornaam *</label>
+          <input type="text" id="f-naam" placeholder="Jan">
+        </div>
+        <div class="form-group">
+          <label for="f-achternaam">Achternaam</label>
+          <input type="text" id="f-achternaam" placeholder="de Vries">
+        </div>
+        <div class="form-group full">
+          <label for="f-email">E-mailadres *</label>
+          <input type="email" id="f-email" placeholder="jan@bedrijf.nl">
+        </div>
+        <div class="form-group">
+          <label for="f-bedrijf">Bedrijfsnaam *</label>
+          <input type="text" id="f-bedrijf" placeholder="Jouw bedrijf">
+        </div>
+        <div class="form-group">
+          <label for="f-functie">Functie</label>
+          <input type="text" id="f-functie" placeholder="Bijv. Manager">
+        </div>
+        <div class="form-group">
+          <label for="f-sector">Sector</label>
+          <select id="f-sector">
+            <option value="">Selecteer...</option>
+            <option>Zakelijke dienstverlening</option>
+            <option>Productie / Industrie</option>
+            <option>Logistiek / Transport</option>
+            <option>Bouw / Installatie</option>
+            <option>Retail / Handel</option>
+            <option>Automotive</option>
+            <option>Zorg</option>
+            <option>Overig</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="f-grootte">Bedrijfsgrootte</label>
+          <select id="f-grootte">
+            <option value="">Selecteer...</option>
+            <option>1–10 medewerkers</option>
+            <option>10–50 medewerkers</option>
+            <option>50–200 medewerkers</option>
+            <option>200–500 medewerkers</option>
+            <option>500+ medewerkers</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="startTest()">Start de scan →</button>
+      <p class="privacy">🔒 Jouw gegevens worden veilig bewaard en nooit gedeeld met derden.</p>
+    </div>
+  </div>
+
+  <!-- S2-S8: DIMENSIONS (JS renders here) -->
+  <div id="dim-container"></div>
+
+  <!-- S9: RESULTS -->
+  <div class="screen" id="s-results">
+    <div class="card">
+      <div class="result-header">
+        <div id="r-badge" class="profile-badge"></div>
+        <h2 id="r-name" class="result-name"></h2>
+        <p id="r-tagline" class="result-tagline"></p>
+      </div>
+      <div class="chart-wrap"><canvas id="radar-chart"></canvas></div>
+      <h3 class="section-title">Jouw scores per dimensie</h3>
+      <div class="dim-scores" id="dim-score-cards"></div>
+    </div>
+    <div class="card">
+      <h3 class="section-title">Jouw top 3 vervolgstappen</h3>
+      <div class="action-list" id="action-list"></div>
+    </div>
+    <div class="cta-card">
+      <h3 class="cta-title">Wil je dit vertalen naar je team?</h3>
+      <p class="cta-sub">Laat je hele team het AI Werkprofiel invullen. In een gratis gesprek van 30 minuten bespreek ik de uitkomsten en vertaal ik die naar concrete stappen voor jouw organisatie.</p>
+      <button class="btn-white" onclick="window.open('https://ai-werkers.nl/gesprek','_blank')">Plan een gratis gesprek →</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── SUPABASE CONFIG ────────────────────────────────────────────────────────
+// Anon key: Supabase Dashboard → jouw project → Settings → API → "anon public"
+const SUPABASE_URL = 'https://fgsvssfktlozeelwpdks.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZnc3Zzc2ZrdGxvemVlbHdwZGtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2OTM1MTYsImV4cCI6MjA4OTI2OTUxNn0.81uZ5fOTW2AGutqTa5ZB3DLBwQgsouF_4NHFnrn45HE'; // ← vervang dit
+
+async function saveToSupabase(scores, prof) {
+  if (SUPABASE_KEY === 'JOUW_ANON_KEY_HIER') { console.log('Supabase: key nog niet ingevuld'); return; }
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/ai_werkprofiel_responses`, {
+      method: 'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'apikey':        SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Prefer':        'return=minimal'
+      },
+      body: JSON.stringify({
+        voornaam:          user.naam.split(' ')[0],
+        achternaam:        user.naam.split(' ').slice(1).join(' '),
+        email:             user.email,
+        bedrijf:           user.bedrijf,
+        functie:           user.functie,
+        sector:            user.sector,
+        grootte:           user.grootte,
+        profiel_type:      prof.name,
+        gemiddelde_score:  +(scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(2),
+        score_kennis:      +scores[0].toFixed(2),
+        score_gebruik:     +scores[1].toFixed(2),
+        score_prompt:      +scores[2].toFixed(2),
+        score_kritisch:    +scores[3].toFixed(2),
+        score_mindset:     +scores[4].toFixed(2),
+        score_comfort:     +scores[5].toFixed(2),
+        score_verantwoord: +scores[6].toFixed(2),
+        antwoorden:        answers
+      })
+    });
+    if (!res.ok) console.warn('Supabase error:', res.status, await res.text());
+  } catch(e) { console.warn('Supabase save failed:', e); }
+}
+
+// ── DATA ───────────────────────────────────────────────────────────────────
+const DIMS = [
+  {
+    id:'kennis', name:'AI-Kennis', icon:'🧠',
+    desc:'Begrijp je wat AI is, wat het kan — en wat het niet kan?',
+    qs:[
+      'Ik begrijp wat AI kan en wat het niet kan in mijn dagelijks werk.',
+      'Ik weet globaal hoe tools zoals ChatGPT of Copilot werken.',
+      'Ik ken het verschil tussen generatieve AI en gewone automatisering.'
+    ],
+    tips:{
+      Starter:'Volg de gratis Nationale AI-Cursus op ai-cursus.nl — 2 uur, volledig in het Nederlands.',
+      Ontdekker:'Verdiep je in één concrete AI-toepassing in jouw sector en test die deze week.',
+      Toepasser:'Leg een collega uit wat AI wel en niet kan aan de hand van een concreet eigen voorbeeld.',
+      Voortrekker:'Schrijf een kennisartikel of geef een korte lunch-sessie voor je team over AI-mogelijkheden.'
+    }
+  },
+  {
+    id:'gebruik', name:'Praktisch Gebruik', icon:'⚙️',
+    desc:'Gebruik jij AI al daadwerkelijk in je dagelijks werk?',
+    qs:[
+      'Ik gebruik AI-tools als onderdeel van mijn dagelijkse werkzaamheden.',
+      'Ik heb AI ingezet om een taak sneller of beter af te ronden.',
+      'Ik weet welke AI-tools relevant zijn voor mijn specifieke functie.',
+      'Ik experimenteer regelmatig met nieuwe AI-toepassingen.'
+    ],
+    tips:{
+      Starter:'Kies één terugkerende taak (bijv. e-mails samenvatten) en probeer die morgen met ChatGPT.',
+      Ontdekker:'Maak een lijst van de 3 taken die je meeste tijd kosten en zoek uit welke AI-tool daarbij helpt.',
+      Toepasser:'Stel een persoonlijke "AI-toolkit" samen voor je functie en deel die met collega\'s.',
+      Voortrekker:'Initieer een AI-gebruik sessie op je afdeling: wat gebruikt iedereen al, en wat nog niet?'
+    }
+  },
+  {
+    id:'prompt', name:'Promptvaardigheid', icon:'💬',
+    desc:'Kun jij AI duidelijk vertellen wat je wilt — en goede output krijgen?',
+    qs:[
+      'Ik kan duidelijk omschrijven wat ik van een AI-tool wil en krijg nuttige resultaten.',
+      'Als de uitkomst tegenvalt, weet ik hoe ik mijn vraag beter kan formuleren.',
+      'Ik geef AI context en achtergrond zodat de output beter aansluit bij mijn situatie.'
+    ],
+    tips:{
+      Starter:'Leer de basisformule: Rol + Taak + Context + Gewenste opmaak. Probeer dit vandaag.',
+      Ontdekker:'Vraag ChatGPT: "Wat ontbreekt er in mijn vraag?" — het verbetert je prompts mee.',
+      Toepasser:'Bouw een persoonlijke bibliotheek van prompts die goed werken voor jouw functie.',
+      Voortrekker:'Maak een "prompt-handleiding" voor je team: 5 templates die direct werken in jullie context.'
+    }
+  },
+  {
+    id:'kritisch', name:'Kritisch Denken', icon:'🔍',
+    desc:'Vertrouw jij AI-output blind — of check je het altijd?',
+    qs:[
+      'Ik controleer AI-gegenereerde informatie altijd voordat ik het gebruik.',
+      'Ik herken wanneer een AI-uitkomst onbetrouwbaar of onjuist kan zijn.',
+      'Ik weet in welke situaties ik AI beter niet kan inzetten.',
+      'Ik kan AI-output verbeteren of bijsturen als het nodig is.'
+    ],
+    tips:{
+      Starter:'Maak één simpele regel: feiten uit AI altijd controleren via een tweede bron.',
+      Ontdekker:'Leer de 3 meest voorkomende AI-fouten: hallucinaties, verouderde info en culturele bias.',
+      Toepasser:'Stel een persoonlijke checklist op voor wanneer je AI-output wél en niet vertrouwt.',
+      Voortrekker:'Deel een concreet voorbeeld van een AI-fout met collega\'s om hun kritisch vermogen te scherpen.'
+    }
+  },
+  {
+    id:'mindset', name:'AI-Mindset', icon:'🚀',
+    desc:'Sta jij open voor AI — ook als het even moeilijk is?',
+    qs:[
+      'Ik sta open om nieuwe AI-tools te leren, ook als dat even tijd kost.',
+      'Ik geloof dat AI mijn werk kan verbeteren zonder mij overbodig te maken.',
+      'Ik deel AI-tips en ervaringen actief met collega\'s.',
+      'Als AI iets fout doet, zie ik dat als leerkans in plaats van reden om te stoppen.'
+    ],
+    tips:{
+      Starter:'Vervang één negatieve gedachte over AI door een vraag: "Wat zou er mogelijk zijn als...?"',
+      Ontdekker:'Zoek een AI-buddy op het werk om experimenten en ervaringen mee te delen.',
+      Toepasser:'Probeer elke week één nieuw AI-ding en deel het resultaat — ook als het mislukt.',
+      Voortrekker:'Word een AI-ambassadeur. Jouw enthousiasme en openheid is de sterkste motivator voor je omgeving.'
+    }
+  },
+  {
+    id:'comfort', name:'AI-Comfort', icon:'😌',
+    desc:'Hoe comfortabel voel jij je bij AI op het werk?',
+    qs:[
+      'Ik voel me op mijn gemak bij het gebruik van AI-tools op het werk.',
+      'Ik maak me geen grote zorgen dat AI mijn baan overneemt.',
+      'AI-tools voelen voor mij als een hulpmiddel, niet als een bedreiging.',
+      'Ik durf openlijk aan collega\'s te vertellen dat ik AI gebruik.'
+    ],
+    tips:{
+      Starter:'Benoem concreet welke zorgen jij hebt over AI. Bespreek ze — dat haalt de scherpte er vaak al af.',
+      Ontdekker:'Lees één artikel over hoe AI banen aanvult in jouw sector (en niet simpelweg vervangt).',
+      Toepasser:'Deel jouw AI-gebruik openlijk in een teamoverleg. Transparantie verlaagt de drempel voor iedereen.',
+      Voortrekker:'Help een collega die moeite heeft met AI. Jouw comfort is voor hen de grootste geruststelling.'
+    }
+  },
+  {
+    id:'verantwoord', name:'Verantwoord Gebruik', icon:'🛡️',
+    desc:'Gebruik jij AI op een veilige, privacybewuste manier?',
+    qs:[
+      'Ik weet welke bedrijfsinformatie ik wel en niet via AI-tools mag verwerken.',
+      'Ik let bewust op privacy en databeveiliging als ik AI gebruik.',
+      'Ik weet dat er regels zijn rondom AI-gebruik op het werk (bijv. GDPR of bedrijfsbeleid).'
+    ],
+    tips:{
+      Starter:'Vraag je leidinggevende: "Wat zijn onze regels rondom AI-gebruik?" — dat is de eerste stap.',
+      Ontdekker:'Leer de basisregel: klantgegevens, financiën en bedrijfsgeheimen horen nooit in een publieke AI.',
+      Toepasser:'Maak een persoonlijk "AI-gebruikskaartje": wat gebruik ik waarvoor, en wat doe ik bewust níet.',
+      Voortrekker:'Stel voor een AI-gebruiksbeleid op te stellen voor je team — de EU AI Act verplicht dit binnenkort.'
+    }
+  }
+];
+
+const LIKERT = [
+  {v:1,label:'Helemaal\nniet'},
+  {v:2,label:'Nauwelijks'},
+  {v:3,label:'Gedeeltelijk'},
+  {v:4,label:'Grotendeels'},
+  {v:5,label:'Volledig'}
+];
+
+const PROFILES = [
+  {max:2.0,name:'Nieuwsgierige Starter',   color:'#dc2626',bg:'#fee2e2',
+   tag:'Je staat aan het begin van je AI-reis — en dat is een prima plek. De kansen liggen voor het oprapen.'},
+  {max:2.8,name:'Voorzichtige Ontdekker',  color:'#ea580c',bg:'#ffedd5',
+   tag:'Je bent al bezig, maar nog voorzichtig. Met een paar gerichte stappen zet je snel grotere sprongen.'},
+  {max:3.6,name:'Praktische Toepasser',    color:'#1a4fa0',bg:'#dbeafe',
+   tag:'Je gebruikt AI effectief in je werk. Nu is het moment om te verdiepen en je kennis te delen.'},
+  {max:4.3,name:'Actieve AI-Gebruiker',    color:'#0891b2',bg:'#cffafe',
+   tag:'Je bent verder dan de meeste collega\'s. Jij kunt het verschil maken als bruggenbouwer in je organisatie.'},
+  {max:5.0,name:'AI-Voortrekker',          color:'#16a34a',bg:'#dcfce7',
+   tag:'Je bent een echt AI-voortrekker. Jouw kennis en comfort zijn waardevol voor je hele organisatie.'}
+];
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+let user = {}, answers = {}, radarChart = null;
+
+// ── NAV ───────────────────────────────────────────────────────────────────
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if(el){ el.classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); }
+}
+
+// ── FORM ──────────────────────────────────────────────────────────────────
+function startTest(){
+  const naam  = document.getElementById('f-naam').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const bedrijf = document.getElementById('f-bedrijf').value.trim();
+  if(!naam||!email||!bedrijf){ alert('Vul je naam, e-mailadres en bedrijfsnaam in.'); return; }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ alert('Vul een geldig e-mailadres in.'); return; }
+  user = {
+    naam: naam+' '+document.getElementById('f-achternaam').value.trim(),
+    email, bedrijf,
+    functie:  document.getElementById('f-functie').value,
+    sector:   document.getElementById('f-sector').value,
+    grootte:  document.getElementById('f-grootte').value,
+    ts: new Date().toISOString()
+  };
+  DIMS.forEach(d=>{ answers[d.id]={}; });
+  buildDims();
+  goTo('dim-0');
+}
+
+// ── BUILD DIMENSION SCREENS ───────────────────────────────────────────────
+function buildDims(){
+  const c = document.getElementById('dim-container');
+  c.innerHTML = '';
+  DIMS.forEach((dim,di)=>{
+    const div = document.createElement('div');
+    div.className = 'screen';
+    div.id = 'dim-'+di;
+    const isLast = di===DIMS.length-1;
+    const pct = Math.round((di/DIMS.length)*100);
+
+    const qs = dim.qs.map((q,qi)=>`
+      <div>
+        <div class="q-num">Vraag ${qi+1} van ${dim.qs.length}</div>
+        <div class="q-text">${q}</div>
+        <div class="likert">
+          ${LIKERT.map(l=>`
+            <button class="l-btn" id="lb-${di}-${qi}-${l.v}"
+              onclick="setAns(${di},${qi},${l.v},this)">
+              <span class="l-score">${l.v}</span>
+              <span class="l-label">${l.label.replace('\n','<br>')}</span>
+            </button>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+
+    div.innerHTML = `
+      <div class="card">
+        <div class="progress-wrap">
+          <div class="progress-top">
+            <span>Dimensie ${di+1} van ${DIMS.length}</span>
+            <span>${pct}% voltooid</span>
+          </div>
+          <div class="progress-bg"><div class="progress-fill" style="width:${pct}%"></div></div>
+        </div>
+        <div class="dim-chip"><div class="dim-num">${di+1}</div>${dim.name}</div>
+        <h2 class="dim-title">${dim.icon} ${dim.name}</h2>
+        <p class="dim-desc">${dim.desc}</p>
+        <div class="q-list">${qs}</div>
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="goTo('${di===0?'s-form':'dim-'+(di-1)}')">← Terug</button>
+          <button class="btn btn-primary" id="nxt-${di}"
+            onclick="${isLast?'showResults()':'goTo(\'dim-'+(di+1)+'\')'}"
+            disabled>
+            ${isLast?'Bekijk mijn profiel →':'Volgende →'}
+          </button>
+        </div>
+      </div>`;
+    c.appendChild(div);
+  });
+}
+
+// ── ANSWER ────────────────────────────────────────────────────────────────
+function setAns(di,qi,v,btn){
+  const dimId = DIMS[di].id;
+  answers[dimId][qi] = v;
+  for(let s=1;s<=5;s++){
+    const b=document.getElementById(`lb-${di}-${qi}-${s}`);
+    if(b) b.classList.toggle('sel',s===v);
+  }
+  const total = DIMS[di].qs.length;
+  const done  = Object.keys(answers[dimId]).length;
+  const nxt   = document.getElementById('nxt-'+di);
+  if(nxt) nxt.disabled = done < total;
+}
+
+// ── SCORING ───────────────────────────────────────────────────────────────
+function calcScores(){
+  return DIMS.map(d=>{
+    const vals = Object.values(answers[d.id]);
+    return vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : 0;
+  });
+}
+
+function maturity(s){
+  if(s<=2.0) return {level:'Starter',   color:'#dc2626',bar:'#dc2626'};
+  if(s<=3.0) return {level:'Ontdekker', color:'#ea580c',bar:'#ea580c'};
+  if(s<=4.0) return {level:'Toepasser', color:'#1a4fa0',bar:'#1a4fa0'};
+  return             {level:'Voortrekker',color:'#16a34a',bar:'#16a34a'};
+}
+
+function profile(avg){
+  return PROFILES.find(p=>avg<=p.max)||PROFILES[PROFILES.length-1];
+}
+
+// ── RESULTS ───────────────────────────────────────────────────────────────
+function showResults(){
+  const scores = calcScores();
+  const avg    = scores.reduce((a,b)=>a+b,0)/scores.length;
+  const prof   = profile(avg);
+  const voornaam = user.naam.split(' ')[0];
+
+  // header
+  const badge = document.getElementById('r-badge');
+  badge.textContent = prof.name;
+  badge.style.cssText = `background:${prof.bg};color:${prof.color}`;
+  document.getElementById('r-name').textContent = `Goed gedaan, ${voornaam}!`;
+  document.getElementById('r-tagline').textContent = prof.tag;
+
+  // radar chart
+  if(radarChart) radarChart.destroy();
+  const ctx = document.getElementById('radar-chart').getContext('2d');
+  radarChart = new Chart(ctx,{
+    type:'radar',
+    data:{
+      labels: DIMS.map(d=>d.name),
+      datasets:[{
+        label:'Score',
+        data: scores,
+        backgroundColor:'rgba(26,79,160,0.13)',
+        borderColor:'#1a4fa0',
+        borderWidth:2.5,
+        pointBackgroundColor:'#1a4fa0',
+        pointRadius:5,
+        pointHoverRadius:7
+      }]
+    },
+    options:{
+      responsive:true,
+      scales:{r:{
+        min:0,max:5,
+        ticks:{stepSize:1,display:false},
+        grid:{color:'#dde4f0'},
+        angleLines:{color:'#dde4f0'},
+        pointLabels:{
+          font:{family:"'DM Sans',sans-serif",size:12,weight:'600'},
+          color:'#1a1f2e'
+        }
+      }},
+      plugins:{legend:{display:false}},
+      animation:{duration:1000,easing:'easeInOutQuart'}
+    }
+  });
+
+  // dim cards
+  document.getElementById('dim-score-cards').innerHTML = DIMS.map((dim,i)=>{
+    const s=scores[i], m=maturity(s);
+    const pct=((s-1)/4)*100;
+    return `
+      <div class="dim-row">
+        <div class="dim-row-icon">${dim.icon}</div>
+        <div class="dim-row-body">
+          <div class="dim-row-top">
+            <div class="dim-row-name">${dim.name}</div>
+            <span class="dim-level" style="background:${m.color}22;color:${m.color}">${m.level} · ${s.toFixed(1)}/5</span>
+          </div>
+          <div class="dim-bar-bg">
+            <div class="dim-bar-fill" id="bar-${i}" style="background:${m.bar}"></div>
+          </div>
+          <div class="dim-tip">${dim.tips[m.level]}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  // top 3 actions = lowest scoring dims
+  const sorted = DIMS.map((d,i)=>({d,s:scores[i]})).sort((a,b)=>a.s-b.s).slice(0,3);
+  document.getElementById('action-list').innerHTML = sorted.map(({d,s},i)=>{
+    const m=maturity(s);
+    return `<div class="action-item">
+      <div class="action-num">${i+1}</div>
+      <div class="action-text"><strong>${d.name}</strong> — ${d.tips[m.level]}</div>
+    </div>`;
+  }).join('');
+
+  goTo('s-results');
+
+  // Sla op in Supabase (fire-and-forget)
+  saveToSupabase(scores, prof);
+
+  // animate bars
+  setTimeout(()=>{
+    DIMS.forEach((_,i)=>{
+      const s=scores[i], pct=((s-1)/4)*100;
+      const el=document.getElementById('bar-'+i);
+      if(el) setTimeout(()=>{ el.style.width=pct+'%'; },i*80);
+    });
+  },400);
+}
+</script>
+</body>
+</html>
